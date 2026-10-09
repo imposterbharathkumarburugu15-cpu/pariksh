@@ -12,6 +12,7 @@ import com.doomedams.app.database.dao.ExamDao
 import com.doomedams.app.database.dao.IncidentDao
 import com.doomedams.app.database.dao.IntegrityEventDao
 import com.doomedams.app.database.dao.SyncOutboxDao
+import com.doomedams.app.database.dao.UserCredentialDao
 import com.doomedams.app.database.dao.UserDao
 import com.doomedams.app.database.entity.AuditEventEntity
 import com.doomedams.app.database.entity.CandidateResponseEntity
@@ -22,11 +23,13 @@ import com.doomedams.app.database.entity.IncidentDecisionEntity
 import com.doomedams.app.database.entity.IntegrityEventEntity
 import com.doomedams.app.database.entity.PolicyActionEntity
 import com.doomedams.app.database.entity.SyncOutboxEntity
+import com.doomedams.app.database.entity.UserCredentialEntity
 import com.doomedams.app.database.entity.UserEntity
 
 @Database(
     entities = [
         UserEntity::class,
+        UserCredentialEntity::class,
         ExamEntity::class,
         ExamAttemptEntity::class,
         CandidateResponseEntity::class,
@@ -43,6 +46,7 @@ import com.doomedams.app.database.entity.UserEntity
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
+    abstract fun userCredentialDao(): UserCredentialDao
     abstract fun examDao(): ExamDao
     abstract fun examAttemptDao(): ExamAttemptDao
     abstract fun candidateResponseDao(): CandidateResponseDao
