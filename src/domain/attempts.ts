@@ -9,7 +9,8 @@ export const AttemptStatusSchema = z.enum([
   'IN_PROGRESS',
   'SUBMITTED',
   'TIMED_OUT',
-  'ABANDONED'
+  'ABANDONED',
+  'CANCELLED'
 ]);
 
 export type AttemptStatus = z.infer<typeof AttemptStatusSchema>;

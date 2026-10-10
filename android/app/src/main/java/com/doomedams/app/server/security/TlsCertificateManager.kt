@@ -105,4 +105,55 @@ object TlsCertificateManager {
         SecureRandom().nextBytes(bytes)
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).toCharArray()
     }
+
+    /**
+     * Retrieves an existing persistent PKCS12 KeyStore from storage, or creates and persists
+     * a new one if missing or expired.
+     * Guarantees that the examiner TLS certificate SHA-256 fingerprint remains constant across
+     * process restarts, eliminating pinning validation failures for reconnecting student devices.
+     */
+    fun getOrCreatePersistentCertificate(
+        storageDir: java.io.File,
+        commonName: String = "DOOMEDAMS-Examiner-Node"
+    ): TlsConfiguration {
+        val keyStoreFile = java.io.File(storageDir, "examiner_keystore.p12")
+        val passwordFile = java.io.File(storageDir, "examiner_keystore.pwd")
+
+        if (keyStoreFile.exists() && passwordFile.exists()) {
+            try {
+                val pwd = passwordFile.readText(Charsets.UTF_8).trim().toCharArray()
+                val ks = KeyStore.getInstance("PKCS12")
+                java.io.FileInputStream(keyStoreFile).use { fis ->
+                    ks.load(fis, pwd)
+                }
+                val cert = ks.getCertificate(KEY_ALIAS) as? X509Certificate
+                if (cert != null) {
+                    cert.checkValidity() // Validates not expired & not before
+                    val digest = MessageDigest.getInstance("SHA-256")
+                    val encodedCert = cert.encoded
+                    val fingerprintBytes = digest.digest(encodedCert)
+                    val sha256Fingerprint = fingerprintBytes.joinToString(":") { "%02X".format(it) }
+                    val pemBase64 = Base64.getMimeEncoder(64, "\n".toByteArray()).encodeToString(encodedCert)
+                    val certificatePem = "-----BEGIN CERTIFICATE-----\n$pemBase64\n-----END CERTIFICATE-----"
+                    return TlsConfiguration(
+                        keyStore = ks,
+                        keyStorePassword = pwd,
+                        certificate = cert,
+                        sha256Fingerprint = sha256Fingerprint,
+                        certificatePem = certificatePem
+                    )
+                }
+            } catch (e: Exception) {
+                // In case of corruption or expired validity, regenerate
+            }
+        }
+
+        val config = generateSelfSignedCertificate(commonName)
+        storageDir.mkdirs()
+        java.io.FileOutputStream(keyStoreFile).use { fos ->
+            config.keyStore.store(fos, config.keyStorePassword)
+        }
+        passwordFile.writeText(String(config.keyStorePassword), Charsets.UTF_8)
+        return config
+    }
 }

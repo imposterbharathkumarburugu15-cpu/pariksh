@@ -3,6 +3,7 @@ package com.doomedams.app.server
 import com.doomedams.app.database.AppDatabase
 import com.doomedams.app.database.audit.AuditEngine
 import com.doomedams.app.database.repository.AttemptRepository
+import com.doomedams.app.database.repository.ExamRepository
 import com.doomedams.app.server.auth.SessionManager
 import com.doomedams.app.server.routes.configureExamServerRoutes
 import com.doomedams.app.server.security.RateLimiter
@@ -53,7 +54,8 @@ data class ServerConfig(
     val host: String = "0.0.0.0",
     val port: Int = 8443,
     val enableTls: Boolean = true,
-    val tlsConfig: TlsConfiguration? = null
+    val tlsConfig: TlsConfiguration? = null,
+    val tlsStorageDir: java.io.File? = null
 ) {
     init {
         require(port in 1024..65535) { "Port must be between 1024 and 65535 (inclusive)" }
@@ -70,6 +72,7 @@ class ExamServer(
 ) {
     private val auditEngine = AuditEngine(database)
     private val attemptRepository = AttemptRepository(database, auditEngine)
+    private val examRepository = ExamRepository(database, auditEngine)
     private val rateLimiter = RateLimiter()
     private val lifecycleMutex = Mutex()
 
@@ -116,7 +119,11 @@ class ExamServer(
 
                 // Configure TLS if requested
                 if (isTlsEnabled && activeTlsConfig == null) {
-                    activeTlsConfig = TlsCertificateManager.generateSelfSignedCertificate()
+                    activeTlsConfig = if (config.tlsStorageDir != null) {
+                        TlsCertificateManager.getOrCreatePersistentCertificate(config.tlsStorageDir)
+                    } else {
+                        TlsCertificateManager.generateSelfSignedCertificate()
+                    }
                 }
 
                 val currentTls = activeTlsConfig
@@ -148,6 +155,7 @@ class ExamServer(
                                     sessionManager = sessionManager,
                                     auditEngine = auditEngine,
                                     attemptRepository = attemptRepository,
+                                    examRepository = examRepository,
                                     rateLimiter = rateLimiter,
                                     tlsFingerprint = currentTls.sha256Fingerprint
                                 )
@@ -175,6 +183,7 @@ class ExamServer(
                             sessionManager = sessionManager,
                             auditEngine = auditEngine,
                             attemptRepository = attemptRepository,
+                            examRepository = examRepository,
                             rateLimiter = rateLimiter,
                             tlsFingerprint = null
                         )

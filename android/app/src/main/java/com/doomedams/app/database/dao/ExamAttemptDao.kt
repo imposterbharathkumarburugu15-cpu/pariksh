@@ -28,6 +28,21 @@ interface ExamAttemptDao {
     @Query("UPDATE exam_attempts SET resultStatus = :resultStatus, updatedAt = :updatedAt WHERE attemptId = :attemptId")
     suspend fun updateResultStatus(attemptId: String, resultStatus: String, updatedAt: String)
 
+    @Query("SELECT * FROM exam_attempts WHERE studentId = :studentId AND examId = :examId ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getAttemptByStudentAndExam(studentId: String, examId: String): ExamAttemptEntity?
+
+    @Query("SELECT * FROM exam_attempts WHERE studentId = :studentId ORDER BY createdAt DESC")
+    suspend fun getAttemptsByStudent(studentId: String): List<ExamAttemptEntity>
+
+    @Query("UPDATE exam_attempts SET attemptStatus = :status, submittedAt = :submittedAt, updatedAt = :updatedAt WHERE attemptId = :attemptId")
+    suspend fun submitAttempt(attemptId: String, status: String, submittedAt: String, updatedAt: String)
+
+    @Query("UPDATE exam_attempts SET attemptStatus = :attemptStatus, resultStatus = :resultStatus, updatedAt = :updatedAt WHERE attemptId = :attemptId")
+    suspend fun updateAttemptAndResultStatus(attemptId: String, attemptStatus: String, resultStatus: String, updatedAt: String)
+
+    @Query("SELECT * FROM exam_attempts ORDER BY createdAt DESC")
+    suspend fun getAllAttempts(): List<ExamAttemptEntity>
+
     @Update
     suspend fun updateAttempt(attempt: ExamAttemptEntity)
 }

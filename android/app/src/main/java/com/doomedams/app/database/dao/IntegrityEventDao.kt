@@ -19,4 +19,13 @@ interface IntegrityEventDao {
 
     @Query("SELECT * FROM integrity_events WHERE eventCategory = :category")
     suspend fun getEventsByCategory(category: String): List<IntegrityEventEntity>
+
+    @Query("SELECT * FROM integrity_events ORDER BY deviceReportedAt DESC")
+    suspend fun getAllEvents(): List<IntegrityEventEntity>
+
+    @Query("SELECT * FROM integrity_events WHERE examId = :examId ORDER BY deviceReportedAt DESC")
+    suspend fun getEventsByExam(examId: String): List<IntegrityEventEntity>
+
+    @Query("UPDATE integrity_events SET ingestionStatus = :status, receivedAt = :receivedAt WHERE eventId = :eventId")
+    suspend fun updateIngestionStatus(eventId: String, status: String, receivedAt: String?)
 }

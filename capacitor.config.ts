@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.doomedams.app',
-  appName: 'DOOMEDAMS',
+  appName: 'Pariksh',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

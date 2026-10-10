@@ -18,6 +18,9 @@ interface ExamDao {
     @Query("SELECT * FROM exams WHERE instituteId = :instituteId ORDER BY createdAt DESC")
     suspend fun getExamsByInstitute(instituteId: String): List<ExamEntity>
 
+    @Query("SELECT * FROM exams ORDER BY createdAt DESC")
+    suspend fun getAllExams(): List<ExamEntity>
+
     @Update
     suspend fun updateExam(exam: ExamEntity)
 }

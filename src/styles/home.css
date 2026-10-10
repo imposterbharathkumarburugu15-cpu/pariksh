@@ -1,0 +1,558 @@
+/* PARIKSH Premium Home Page & Micro-Animations Style System */
+
+.pariksh-home-container {
+  position: relative;
+  overflow-x: hidden;
+  padding: 1.5rem 2rem 3rem 2rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes livePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(52, 211, 153, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+  }
+}
+
+/* Ambient Background Orbs */
+.pariksh-ambient-orb {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: pulseGlow 10s infinite alternate ease-in-out;
+}
+
+.pariksh-ambient-orb-1 {
+  top: -100px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(37, 99, 235, 0.03) 70%, transparent 100%);
+}
+
+.pariksh-ambient-orb-2 {
+  top: 150px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 0%, rgba(5, 150, 105, 0.02) 70%, transparent 100%);
+}
+
+/* Hero Section */
+.pariksh-hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2.5rem 1rem 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pariksh-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: 9999px;
+  padding: 0.35rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #93c5fd;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(8px);
+}
+
+.pariksh-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #34d399;
+  animation: livePulse 2s infinite;
+}
+
+.pariksh-brand-lockup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.pariksh-logo-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #047857 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f8fafc;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pariksh-logo-icon:hover {
+  transform: scale(1.08) rotate(2deg);
+}
+
+.pariksh-hero-title {
+  font-size: 3.4rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #f8fafc 30%, #93c5fd 70%, #6ee7b7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.pariksh-devanagari-subtitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #34d399;
+  -webkit-text-fill-color: #34d399;
+  letter-spacing: 0.02em;
+}
+
+.pariksh-hero-desc {
+  max-width: 720px;
+  font-size: 1.05rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+/* Status Banner */
+.pariksh-status-banner {
+  background: rgba(19, 27, 46, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 780px;
+  width: 100%;
+  backdrop-filter: blur(12px);
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.pariksh-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.pariksh-live-indicator-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #94a3b8;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.pariksh-live-indicator-dot.is-online {
+  background-color: #34d399;
+  animation: livePulse 2s infinite;
+}
+
+.pariksh-status-label {
+  font-size: 0.725rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.pariksh-status-value {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.pariksh-server-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pariksh-server-input {
+  background: #0b0f19;
+  border: 1px solid var(--color-surface-border);
+  border-radius: 6px;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.8rem;
+  color: var(--color-text-primary);
+  width: 180px;
+  font-family: monospace;
+}
+
+.pariksh-ping-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #f1f5f9;
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.pariksh-ping-btn:hover:not(:disabled) {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+/* Quick Role Bar */
+.pariksh-quick-login-card {
+  background: rgba(19, 27, 46, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  max-width: 780px;
+  width: 100%;
+}
+
+.pariksh-quick-login-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.65rem;
+}
+
+.pariksh-current-user-tag {
+  color: #38bdf8;
+  font-size: 0.775rem;
+  text-transform: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pariksh-logout-link {
+  background: none;
+  border: none;
+  color: #f87171;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0;
+}
+
+.pariksh-quick-roles-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.pariksh-role-btn {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pariksh-role-btn:hover {
+  background: #1e293b;
+  border-color: #38bdf8;
+  color: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.pariksh-role-btn.is-active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+/* Portals Section */
+.pariksh-portals-section {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.5rem;
+}
+
+.pariksh-section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pariksh-section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 1.2rem;
+  background: linear-gradient(to bottom, #3b82f6, #10b981);
+  border-radius: 2px;
+}
+
+.pariksh-portals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+.pariksh-portal-card {
+  position: relative;
+  background: rgba(19, 27, 46, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.pariksh-portal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.8), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pariksh-portal-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.15);
+  background: rgba(23, 33, 56, 0.85);
+}
+
+.pariksh-portal-card:hover::before {
+  opacity: 1;
+}
+
+.pariksh-card-student:hover {
+  border-color: rgba(52, 211, 153, 0.4);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(52, 211, 153, 0.15);
+}
+.pariksh-card-student:hover::before {
+  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.8), transparent);
+}
+
+.pariksh-card-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pariksh-card-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.85rem;
+  line-height: 1;
+}
+
+.pariksh-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.pariksh-card-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+  flex-grow: 1;
+}
+
+.pariksh-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pariksh-card-action {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #60a5fa;
+  transition: transform 0.2s ease;
+}
+
+.pariksh-portal-card:hover .pariksh-card-action {
+  transform: translateX(4px);
+}
+
+.pariksh-card-pill {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  background: #0b0f19;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Architectural Highlights */
+.pariksh-highlights-section {
+  position: relative;
+  z-index: 1;
+  margin-top: 3rem;
+}
+
+.pariksh-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.pariksh-highlight-item {
+  background: rgba(19, 27, 46, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: border-color 0.2s ease;
+}
+
+.pariksh-highlight-item:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.pariksh-highlight-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.pariksh-highlight-item h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.35rem;
+}
+
+.pariksh-highlight-item p {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Footer */
+.pariksh-footer {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-surface-border);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.pariksh-footer-brand {
+  margin-bottom: 0.35rem;
+  color: var(--color-text-secondary);
+}
+
+.pariksh-footer-meta code {
+  background: #0b0f19;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  color: #93c5fd;
+  font-size: 0.75rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pariksh-home-container {
+    padding: 1rem 1rem 2rem 1rem;
+  }
+  .pariksh-hero-title {
+    font-size: 2.5rem;
+  }
+  .pariksh-status-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .pariksh-server-input-wrapper {
+    flex-direction: column;
+  }
+  .pariksh-server-input {
+    width: 100%;
+  }
+  .pariksh-portals-grid {
+    grid-template-columns: 1fr;
+  }
+}

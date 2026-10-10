@@ -1,0 +1,329 @@
+/* =========================================================================
+   DOOMEDAMS EXAMINATION INTELLIGENCE DASHBOARD STYLES
+   Visual Architecture: Dark navy/graphite surfaces, restrained cyan/teal accents.
+   Strict Rules: Zero Tailwind, Zero bright purple, accessible high contrast.
+   ========================================================================= */
+
+.analytics-dashboard-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #0b0f19;
+  color: #f1f5f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background-color: #131b2e;
+  border-bottom: 1px solid #1f2a44;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.analytics-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.analytics-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+}
+
+.analytics-badge-node {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.analytics-exam-selector {
+  background-color: #0b0f19;
+  color: #f8fafc;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.analytics-nav-bar {
+  display: flex;
+  background-color: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  padding: 0 1.5rem;
+  overflow-x: auto;
+  gap: 0.5rem;
+}
+
+.analytics-nav-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease-in-out;
+  white-space: nowrap;
+}
+
+.analytics-nav-btn:hover {
+  color: #f1f5f9;
+}
+
+.analytics-nav-btn.active {
+  color: #38bdf8;
+  border-bottom: 2px solid #38bdf8;
+  font-weight: 600;
+}
+
+.analytics-container {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.75rem;
+}
+
+/* KPI Cards Grid */
+.analytics-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.analytics-kpi-card {
+  background-color: #131b2e;
+  border: 1px solid #1f2a44;
+  border-radius: 8px;
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.analytics-kpi-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin-bottom: 0.35rem;
+}
+
+.analytics-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.1;
+}
+
+.analytics-kpi-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.35rem;
+}
+
+/* Panel Containers */
+.analytics-panel {
+  background-color: #131b2e;
+  border: 1px solid #1f2a44;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.analytics-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.analytics-panel-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Data Tables */
+.analytics-table-wrap {
+  overflow-x: auto;
+}
+
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+}
+
+.analytics-table th {
+  background-color: #0b0f19;
+  color: #94a3b8;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #1e293b;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.analytics-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1e293b;
+  white-space: nowrap;
+}
+
+.analytics-table tr:hover {
+  background-color: rgba(56, 189, 248, 0.04);
+}
+
+/* Badges */
+.badge-status {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-published {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-held {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badge-withheld {
+  background: rgba(234, 179, 8, 0.15);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.badge-pending {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* Notification & Telemetry Notices */
+.analytics-notice-box {
+  background: rgba(20, 184, 166, 0.08);
+  border-left: 3px solid #14b8a6;
+  padding: 0.85rem 1.25rem;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.analytics-warning-box {
+  background: rgba(234, 179, 8, 0.08);
+  border-left: 3px solid #eab308;
+  padding: 0.85rem 1.25rem;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+/* Modals */
+.analytics-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(3, 7, 18, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.analytics-modal-content {
+  background-color: #131b2e;
+  border: 1px solid #1f2a44;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.analytics-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid #1f2a44;
+}
+
+.analytics-modal-body {
+  padding: 1.5rem 1.75rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.analytics-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.75rem;
+  border-top: 1px solid #1f2a44;
+  background-color: #0b0f19;
+}
+
+/* Progress bar */
+.bar-track {
+  width: 100%;
+  height: 8px;
+  background-color: #0b0f19;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.35rem;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.bar-fill-cyan {
+  background-color: #38bdf8;
+}
+
+.bar-fill-teal {
+  background-color: #14b8a6;
+}
+
+.bar-fill-red {
+  background-color: #f87171;
+}

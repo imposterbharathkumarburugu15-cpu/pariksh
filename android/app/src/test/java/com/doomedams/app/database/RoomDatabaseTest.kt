@@ -433,4 +433,104 @@ class RoomDatabaseTest {
         val retrievedAttempt = database.examAttemptDao().getAttemptById("att_clean_01")
         assertEquals("PENDING_GRADING", retrievedAttempt?.resultStatus)
     }
+
+    @Test
+    fun test20_serverEventReceiptPersistenceAndQuery() = runTest {
+        val (user, exam) = seedUserAndExam()
+        val attempt = ExamAttemptEntity(
+            attemptId = "att_sync_01",
+            examId = exam.examId,
+            studentId = user.userId,
+            attemptStatus = "IN_PROGRESS",
+            resultStatus = "PENDING_GRADING",
+            startedAt = "2026-10-10T10:00:00Z",
+            submittedAt = null,
+            deadlineMetadata = "{}",
+            createdAt = "2026-10-10T10:00:00Z",
+            updatedAt = "2026-10-10T10:00:00Z"
+        )
+        database.examAttemptDao().insertAttempt(attempt)
+
+        val receipt = com.doomedams.app.database.entity.ServerEventReceiptEntity(
+            receiptId = "rcpt_1001",
+            eventId = "evt_sync_1001",
+            attemptId = attempt.attemptId,
+            studentId = user.userId,
+            eventType = "ANSWER_UPDATE",
+            payloadHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            idempotencyKey = "idem_1001",
+            processingStatus = "ACCEPTED",
+            resultingVersion = 2,
+            rejectionReason = null,
+            serverReceivedAt = "2026-10-10T10:05:00Z",
+            processedAt = "2026-10-10T10:05:01Z"
+        )
+
+        database.serverEventReceiptDao().insertReceipt(receipt)
+
+        val retrieved = database.serverEventReceiptDao().getReceiptByEventId("evt_sync_1001")
+        assertNotNull(retrieved)
+        assertEquals("rcpt_1001", retrieved?.receiptId)
+        assertEquals("ACCEPTED", retrieved?.processingStatus)
+        assertEquals(2, retrieved?.resultingVersion)
+
+        val byAttempt = database.serverEventReceiptDao().getReceiptsByAttemptId(attempt.attemptId)
+        assertEquals(1, byAttempt.size)
+
+        val countAccepted = database.serverEventReceiptDao().getReceiptCountByStatus("ACCEPTED")
+        assertEquals(1, countAccepted)
+    }
+
+    @Test
+    fun test21_duplicateEventIdRejectedByUniqueConstraint() = runTest {
+        val (user, exam) = seedUserAndExam()
+        val attempt = ExamAttemptEntity(
+            attemptId = "att_sync_02",
+            examId = exam.examId,
+            studentId = user.userId,
+            attemptStatus = "IN_PROGRESS",
+            resultStatus = "PENDING_GRADING",
+            startedAt = "2026-10-10T10:00:00Z",
+            submittedAt = null,
+            deadlineMetadata = "{}",
+            createdAt = "2026-10-10T10:00:00Z",
+            updatedAt = "2026-10-10T10:00:00Z"
+        )
+        database.examAttemptDao().insertAttempt(attempt)
+
+        val receipt1 = com.doomedams.app.database.entity.ServerEventReceiptEntity(
+            receiptId = "rcpt_2001",
+            eventId = "evt_duplicate_id",
+            attemptId = attempt.attemptId,
+            studentId = user.userId,
+            eventType = "ANSWER_UPDATE",
+            payloadHash = "hash_one_000000000000000000000000000000000000000000000000000000000",
+            processingStatus = "ACCEPTED",
+            resultingVersion = 1,
+            serverReceivedAt = "2026-10-10T10:05:00Z",
+            processedAt = "2026-10-10T10:05:01Z"
+        )
+        database.serverEventReceiptDao().insertReceipt(receipt1)
+
+        val receipt2 = com.doomedams.app.database.entity.ServerEventReceiptEntity(
+            receiptId = "rcpt_2002",
+            eventId = "evt_duplicate_id", // Same eventId
+            attemptId = attempt.attemptId,
+            studentId = user.userId,
+            eventType = "ANSWER_UPDATE",
+            payloadHash = "hash_two_000000000000000000000000000000000000000000000000000000000",
+            processingStatus = "ACCEPTED",
+            resultingVersion = 2,
+            serverReceivedAt = "2026-10-10T10:06:00Z",
+            processedAt = "2026-10-10T10:06:01Z"
+        )
+
+        try {
+            database.serverEventReceiptDao().insertReceipt(receipt2)
+            fail("Expected SQLiteConstraintException due to unique constraint on eventId")
+        } catch (e: android.database.sqlite.SQLiteConstraintException) {
+            // Expected constraint violation
+            assertTrue(true)
+        }
+    }
 }

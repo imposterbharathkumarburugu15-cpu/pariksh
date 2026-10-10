@@ -5,3 +5,8 @@ export * from './attempts';
 export * from './integrity-events';
 export * from './incidents';
 export * from './audit';
+export * from './compiler';
+export * from './scoring';
+export * from './candidate';
+export * from './analytics';
+export * from './sync';

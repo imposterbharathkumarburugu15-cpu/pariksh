@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">DOOMEDAMS</string>
-    <string name="title_activity_main">DOOMEDAMS</string>
+    <string name="app_name">Pariksh</string>
+    <string name="title_activity_main">Pariksh</string>
     <string name="package_name">com.doomedams.app</string>
     <string name="custom_url_scheme">com.doomedams.app</string>
 </resources>

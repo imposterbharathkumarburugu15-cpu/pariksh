@@ -135,3 +135,53 @@ export const REQUIRED_LIMITED_EVIDENCE_HOLD_FIXTURE: IncidentReviewProposal = {
   intendedIncidentStatus: 'PENDING_FURTHER_REVIEW',
   intendedResultStatus: 'HELD_PENDING_REVIEW'
 };
+
+/**
+ * Formal Appeal status values
+ */
+export const AppealStatusSchema = z.enum([
+  'SUBMITTED',
+  'PENDING_REVIEW',
+  'UNDER_REVIEW',
+  'UPHELD',
+  'OVERTURNED',
+  'REQUIRES_MORE_INFORMATION',
+  'CLOSED'
+]);
+
+export type AppealStatus = z.infer<typeof AppealStatusSchema>;
+
+export const AppealChallengedActionSchema = z.enum([
+  'RESULT_HOLD',
+  'CANCEL_ATTEMPT',
+  'CONFIRMED_VIOLATION'
+]);
+
+export type AppealChallengedAction = z.infer<typeof AppealChallengedActionSchema>;
+
+export const AppealDecisionOutcomeSchema = z.enum([
+  'UPHELD',
+  'OVERTURNED',
+  'REQUIRES_MORE_INFO'
+]);
+
+export type AppealDecisionOutcome = z.infer<typeof AppealDecisionOutcomeSchema>;
+
+export const IncidentAppealSchema = z.object({
+  appealId: EntityIdSchema,
+  incidentId: EntityIdSchema,
+  attemptId: EntityIdSchema,
+  studentId: EntityIdSchema,
+  challengedAction: AppealChallengedActionSchema,
+  appealReason: z.string().min(1),
+  evidenceReferences: z.string().nullable().optional(),
+  appealStatus: AppealStatusSchema,
+  assignedReviewerId: EntityIdSchema.nullable().optional(),
+  reviewerDecision: AppealDecisionOutcomeSchema.nullable().optional(),
+  outcomeReason: z.string().nullable().optional(),
+  submittedAt: IsoTimestampSchema,
+  resolvedAt: IsoTimestampSchema.nullable().optional(),
+  updatedAt: IsoTimestampSchema
+});
+
+export type IncidentAppeal = z.infer<typeof IncidentAppealSchema>;

@@ -16,4 +16,7 @@ interface CandidateResponseDao {
 
     @Query("SELECT * FROM candidate_responses WHERE attemptId = :attemptId ORDER BY savedAt ASC")
     suspend fun getResponsesByAttempt(attemptId: String): List<CandidateResponseEntity>
+
+    @Query("SELECT * FROM candidate_responses WHERE questionId = :questionId")
+    suspend fun getResponsesByQuestionId(questionId: String): List<CandidateResponseEntity>
 }
