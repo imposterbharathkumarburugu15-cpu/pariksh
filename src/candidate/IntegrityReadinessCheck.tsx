@@ -163,7 +163,7 @@ export const IntegrityReadinessCheck: React.FC<IntegrityReadinessCheckProps> = (
         <div className="readiness-notice">
           <strong>Notice on Personal Phone Mode:</strong>
           <p>
-            On personal devices, DOOMEDAMS records when the examination app enters the background or loses focus.
+            On personal devices, PARIKSH records when the examination app enters the background or loses focus.
             Leaving the exam window is immediately reported to the examiner as a telemetry event.
             Return to the exam promptly to prevent automatic escalation or attempt cancellation.
           </p>

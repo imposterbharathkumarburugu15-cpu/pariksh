@@ -180,13 +180,15 @@ export const App: React.FC = () => {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <header className="app-navbar">
         <div className="app-navbar-brand" onClick={() => setActiveView('home')} style={{ cursor: 'pointer' }}>
-          <span className="app-navbar-logo" style={{ letterSpacing: '0.04em', fontWeight: 800 }}>PARIKSH</span>
-          <span className="compiler-badge" style={{ margin: 0, background: 'rgba(52, 211, 153, 0.15)', color: '#34d399', border: '1px solid rgba(52, 211, 153, 0.3)' }}>
-            परीक्ष • v1.0
+          <span className="app-navbar-logo">
+            PARIKSH <span>•</span>
+          </span>
+          <span className="app-navbar-version-badge">
+            v1.0 Institutional
           </span>
         </div>
 
-        <nav className="app-nav-tabs">
+        <nav className="app-nav-tabs" aria-label="Main Navigation">
           <button
             className={`app-nav-btn ${activeView === 'home' ? 'active' : ''}`}
             onClick={() => setActiveView('home')}
@@ -200,7 +202,7 @@ export const App: React.FC = () => {
               color: activeView === 'smarthire' ? '#38bdf8' : '#93c5fd',
               fontWeight: 700,
               background: activeView === 'smarthire' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(56, 189, 248, 0.05)',
-              border: '1px solid rgba(56, 189, 248, 0.25)'
+              borderColor: 'rgba(56, 189, 248, 0.25)'
             }}
           >
             💼 Smart Hire
@@ -239,23 +241,23 @@ export const App: React.FC = () => {
             className={`app-nav-btn ${activeView === 'server' ? 'active' : ''}`}
             onClick={() => setActiveView('server')}
           >
-            ⚙️ Server & RBAC
+            ⚙️ Server & Access
           </button>
         </nav>
 
         <div>
           {currentUser ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
-                {currentUser.displayName} <strong style={{ color: '#38bdf8' }}>({currentUser.role})</strong>
+            <div className="app-user-chip">
+              <span>
+                {currentUser.displayName} <strong>({currentUser.role})</strong>
               </span>
-              <button className="dev-btn dev-btn-danger btn-xs" onClick={handleLogout}>
+              <button className="btn btn-danger btn-xs" onClick={handleLogout}>
                 Logout
               </button>
             </div>
           ) : (
             <button
-              className="dev-btn dev-btn-outline btn-xs"
+              className="btn btn-outline btn-xs"
               onClick={() => setActiveView('server')}
             >
               Sign In (Sandbox)
@@ -285,16 +287,16 @@ export const App: React.FC = () => {
           />
         ) : (
           <main className="shell-container">
-            <div className="shell-card">
+            <div className="shell-card" style={{ maxWidth: '640px' }}>
               <span className="shell-badge">Candidate Portal Authentication</span>
-              <h2 className="shell-title" style={{ fontSize: '1.6rem' }}>Sign In to Student Portal</h2>
+              <h2 className="shell-title" style={{ fontSize: '1.65rem' }}>Sign In to Student Portal</h2>
               <p className="shell-subtitle">
-                Authenticate with your student account to access assigned examinations.
+                Authenticate with your assigned candidate credentials to access enrolled offline examinations.
               </p>
               <form onSubmit={handleLogin} className="dev-form-grid">
                 <input
                   type="text"
-                  className="dev-input"
+                  className="input-field"
                   placeholder="Student User ID (e.g. usr_student_001)"
                   value={loginUserId}
                   onChange={(e) => setLoginUserId(e.target.value)}
@@ -302,19 +304,19 @@ export const App: React.FC = () => {
                 />
                 <input
                   type="password"
-                  className="dev-input"
+                  className="input-field"
                   placeholder="Password"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   required
                 />
-                <button type="submit" className="dev-btn dev-btn-accent">
+                <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>
                   Authenticate & Launch Portal
                 </button>
               </form>
               {authError && (
-                <div className="dev-alert dev-alert-danger" style={{ marginTop: '1rem' }}>
-                  {authError}
+                <div className="alert-box alert-error" style={{ marginTop: '1.25rem' }}>
+                  ⚠️ {authError}
                 </div>
               )}
             </div>
@@ -348,243 +350,280 @@ export const App: React.FC = () => {
         />
       ) : (
         <main className="shell-container">
-          <div className="shell-card" style={{ maxWidth: '880px' }}>
-            <span className="shell-badge">Step 4 Trusted Server & RBAC</span>
-            <h1 className="shell-title">DOOMEDAMS</h1>
+          <div className="shell-card" style={{ maxWidth: '980px' }}>
+            <span className="shell-badge">Examiner Infrastructure Console</span>
+            <h1 className="shell-title">PARIKSH Server & Access Control</h1>
             <p className="shell-subtitle">
-              Examiner Offline Node — Local Application Server & Server-Side RBAC Enforcement
+              Examiner Node Management • TLS Certificate Trust • Server-Enforced RBAC
             </p>
 
-        {/* SECTION 1: SERVER STATUS */}
-        <div className="dev-panel">
-          <h2 className="dev-panel-title">1. Embedded Examiner Server Node</h2>
-          <div className="dev-form-row">
-            <input
-              type="text"
-              className="dev-input"
-              value={serverUrl}
-              onChange={(e) => setServerUrl(e.target.value)}
-              placeholder="http://127.0.0.1:8443"
-            />
-            <button className="dev-btn dev-btn-primary" onClick={checkServerStatus}>
-              Ping Server
-            </button>
-          </div>
-
-          {serverStatus && (
-            <div className="shell-status-grid" style={{ marginTop: '1rem' }}>
-              <div className="shell-status-item">
-                <div className="shell-status-label">State</div>
-                <div className="shell-status-value" style={{ color: 'var(--color-success)' }}>
-                  ● {serverStatus.status}
-                </div>
-              </div>
-              <div className="shell-status-item">
-                <div className="shell-status-label">Host & Port</div>
-                <div className="shell-status-value">
-                  {serverStatus.host}:{serverStatus.port}
-                </div>
-              </div>
-              <div className="shell-status-item">
-                <div className="shell-status-label">Transport Security</div>
-                <div className="shell-status-value">
-                  {serverStatus.tlsEnabled ? '🔒 TLS Enabled' : 'Plain HTTP (Testing)'}
-                </div>
-              </div>
-              <div className="shell-status-item">
-                <div className="shell-status-label">Active Sessions</div>
-                <div className="shell-status-value">{serverStatus.activeSessions}</div>
-              </div>
-            </div>
-          )}
-
-          {serverError && (
-            <div className="dev-alert dev-alert-danger">
-              Server Unreachable: {serverError}
-            </div>
-          )}
-        </div>
-
-        {/* SECTION 2: AUTHENTICATION */}
-        <div className="dev-panel" style={{ marginTop: '1.5rem' }}>
-          <h2 className="dev-panel-title">2. Offline Session Authentication</h2>
-          {!currentUser ? (
-            <form onSubmit={handleLogin} className="dev-form-grid">
-              <input
-                type="text"
-                className="dev-input"
-                placeholder="User ID (e.g. usr_student_001)"
-                value={loginUserId}
-                onChange={(e) => setLoginUserId(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                className="dev-input"
-                placeholder="Password"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                required
-              />
-              <button type="submit" className="dev-btn dev-btn-accent">
-                Authenticate Session
-              </button>
-            </form>
-          ) : (
-            <div>
-              <div className="dev-user-card">
-                <div>
-                  <strong>{currentUser.displayName}</strong> ({currentUser.userId})
-                  <div className="dev-role-badge">Role: {currentUser.role}</div>
-                  <div className="dev-scope-badge">Institute: {currentUser.instituteId}</div>
-                </div>
-                <button className="dev-btn dev-btn-danger" onClick={handleLogout}>
-                  Terminate Session
+            {/* SECTION 1: SERVER NODE STATUS & NETWORK ADVICE */}
+            <div className="dev-panel">
+              <h2 className="dev-panel-title">1. Embedded Examiner Server Node</h2>
+              <div className="dev-form-row">
+                <input
+                  type="text"
+                  className="input-field"
+                  value={serverUrl}
+                  onChange={(e) => setServerUrl(e.target.value)}
+                  placeholder="http://127.0.0.1:8443"
+                />
+                <button className="btn btn-primary" onClick={checkServerStatus}>
+                  Ping & Verify Node
                 </button>
               </div>
+
+              {/* Loopback vs LAN IP Guidance */}
+              <div style={{ marginTop: '1rem', padding: '0.85rem 1rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(41, 58, 82, 0.7)', borderRadius: '8px', fontSize: '0.85rem' }}>
+                {(serverUrl.includes('127.0.0.1') || serverUrl.includes('localhost')) ? (
+                  <div style={{ color: '#fbbf24', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <span>⚠️</span>
+                    <div>
+                      <strong>Loopback Endpoint Notice (127.0.0.1):</strong> This address refers to this device only.
+                      To pair candidate Android devices across a local Wi-Fi router, configure this to the Examiner's LAN IP address
+                      (e.g. <code>http://192.168.1.50:8443</code>).
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ color: '#34d399', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <span>🌐</span>
+                    <div>
+                      <strong>Local Network Endpoint Active:</strong> Devices on the same Wi-Fi subnet can discover and synchronize with this node address.
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {serverStatus && (
+                <div className="shell-status-grid" style={{ marginTop: '1.25rem' }}>
+                  <div className="shell-status-item">
+                    <div className="shell-status-label">Lifecycle State</div>
+                    <div className="shell-status-value" style={{ color: 'var(--color-success)' }}>
+                      <span className="shell-status-dot" /> {serverStatus.status}
+                    </div>
+                  </div>
+                  <div className="shell-status-item">
+                    <div className="shell-status-label">Host & Port</div>
+                    <div className="shell-status-value">
+                      {serverStatus.host}:{serverStatus.port}
+                    </div>
+                  </div>
+                  <div className="shell-status-item">
+                    <div className="shell-status-label">Transport Security</div>
+                    <div className="shell-status-value">
+                      {serverStatus.tlsEnabled ? '🔒 TLS Enabled' : 'Plain HTTP (Testing)'}
+                    </div>
+                  </div>
+                  <div className="shell-status-item">
+                    <div className="shell-status-label">Active Sessions</div>
+                    <div className="shell-status-value">{serverStatus.activeSessions} Active</div>
+                  </div>
+                </div>
+              )}
+
+              {serverStatus?.sha256Fingerprint && (
+                <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: '#94a3b8' }}>
+                  Certificate SHA-256 Fingerprint: <code style={{ color: '#38bdf8' }}>{serverStatus.sha256Fingerprint}</code>
+                </div>
+              )}
+
+              {serverError && (
+                <div className="alert-box alert-error" style={{ marginTop: '1rem' }}>
+                  Server Unreachable: {serverError}
+                </div>
+              )}
             </div>
-          )}
 
-          {authError && (
-            <div className="dev-alert dev-alert-danger" style={{ marginTop: '0.75rem' }}>
-              Authentication Failure: {authError}
+            {/* SECTION 2: OPERATOR AUTHENTICATION */}
+            <div className="dev-panel" style={{ marginTop: '1.5rem' }}>
+              <h2 className="dev-panel-title">2. Offline Session Authentication</h2>
+              {!currentUser ? (
+                <form onSubmit={handleLogin} className="dev-form-grid">
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                    <input
+                      type="text"
+                      className="input-field"
+                      placeholder="User ID (e.g. usr_student_001)"
+                      value={loginUserId}
+                      onChange={(e) => setLoginUserId(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="password"
+                      className="input-field"
+                      placeholder="Password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary" style={{ justifySelf: 'start', marginTop: '0.5rem' }}>
+                    Authenticate Session
+                  </button>
+                </form>
+              ) : (
+                <div>
+                  <div className="dev-user-card">
+                    <div>
+                      <strong style={{ fontSize: '1rem', color: '#f1f5f9' }}>{currentUser.displayName}</strong> ({currentUser.userId})
+                      <div className="dev-role-badge">Role: {currentUser.role}</div>
+                      <div className="dev-scope-badge">Institute: {currentUser.instituteId}</div>
+                    </div>
+                    <button className="btn btn-danger btn-sm" onClick={handleLogout}>
+                      Terminate Session
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {authError && (
+                <div className="alert-box alert-error" style={{ marginTop: '1rem' }}>
+                  Authentication Failure: {authError}
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* SECTION 3: RBAC VERIFICATION SANDBOX */}
-        <div className="dev-panel" style={{ marginTop: '1.5rem' }}>
-          <h2 className="dev-panel-title">3. Server-Enforced RBAC & Scope Test Actions</h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>
-            Trigger real API calls to the offline server. All authorization decisions are strictly enforced on the server.
-          </p>
-
-          <div className="dev-action-grid">
-            <button
-              className="dev-btn dev-btn-outline"
-              disabled={actionLoading}
-              onClick={() => executeProtectedAction('Current Profile', '/api/auth/me', 'GET')}
-            >
-              Verify Profile (GET /api/auth/me)
-            </button>
-            <button
-              className="dev-btn dev-btn-outline"
-              disabled={actionLoading}
-              onClick={() =>
-                executeProtectedAction(
-                  'Provision User',
-                  '/api/admin/users/provision',
-                  'POST',
-                  {
-                    userId: `usr_test_${Date.now()}`,
-                    displayName: 'Sandbox User',
-                    role: 'STUDENT',
-                    instituteId: currentUser?.instituteId || 'inst_001',
-                    password: 'TemporaryPass123!'
-                  }
-                )
-              }
-            >
-              Admin Provision User (Requires USER_PROVISION)
-            </button>
-            <button
-              className="dev-btn dev-btn-outline"
-              disabled={actionLoading}
-              onClick={() =>
-                executeProtectedAction('Fetch Exam', '/api/exams/exam-001', 'GET')
-              }
-            >
-              Fetch Exam exam-001 (Requires Scope / Enrollment)
-            </button>
-            <button
-              className="dev-btn dev-btn-outline"
-              disabled={actionLoading}
-              onClick={() =>
-                executeProtectedAction(
-                  'Submit Own Answer',
-                  '/api/attempts/att-001/answers',
-                  'POST',
-                  {
-                    questionId: 'q-001',
-                    value: 'A',
-                    clientSequenceNumber: 1,
-                    clientRecordedAt: new Date().toISOString()
-                  }
-                )
-              }
-            >
-              Submit Answer (att-001, Own Attempt)
-            </button>
-            <button
-              className="dev-btn dev-btn-outline"
-              disabled={actionLoading}
-              onClick={() =>
-                executeProtectedAction(
-                  'Submit Other Answer',
-                  '/api/attempts/att-999-forbidden/answers',
-                  'POST',
-                  {
-                    questionId: 'q-001',
-                    value: 'B',
-                    clientSequenceNumber: 1,
-                    clientRecordedAt: new Date().toISOString()
-                  }
-                )
-              }
-            >
-              Submit to Foreign Attempt (Fail-Closed Check)
-            </button>
-            <button
-              className="dev-btn dev-btn-outline"
-              disabled={actionLoading}
-              onClick={() =>
-                executeProtectedAction(
-                  'Report Integrity Event',
-                  '/api/attempts/att-001/integrity-events',
-                  'POST',
-                  {
-                    eventId: `evt_${Date.now()}`,
-                    eventCategory: 'APP_SWITCH',
-                    clientTimestamp: new Date().toISOString(),
-                    sequenceNumber: 1,
-                    appPackageName: 'com.browser.app',
-                    displayedAppName: 'Browser'
-                  }
-                )
-              }
-            >
-              Report Integrity Event (att-001)
-            </button>
-          </div>
-
-          {lastActionResponse && (
-            <div className="dev-response-container">
-              <div className="dev-response-header">
-                <span>{lastActionResponse.endpoint}</span>
-                <span
-                  className={
-                    lastActionResponse.status >= 200 && lastActionResponse.status < 300
-                      ? 'dev-badge-success'
-                      : lastActionResponse.status === 403
-                      ? 'dev-badge-forbidden'
-                      : 'dev-badge-error'
-                  }
-                >
-                  HTTP {lastActionResponse.status || 'FAILED'}
+            {/* SECTION 3: SERVER-ENFORCED RBAC & POLICY VERIFICATION */}
+            <div className="dev-panel" style={{ marginTop: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <h2 className="dev-panel-title" style={{ margin: 0 }}>
+                  3. Server-Enforced RBAC & Security Audit Sandbox
+                </h2>
+                <span className="compiler-badge" style={{ margin: 0, background: 'rgba(234, 179, 8, 0.15)', color: '#fbbf24', borderColor: 'rgba(234, 179, 8, 0.3)' }}>
+                  Demonstration / Audit Verification Only
                 </span>
               </div>
-              <pre className="dev-response-body">
-                {JSON.stringify(lastActionResponse.data, null, 2)}
-              </pre>
-            </div>
-          )}
-        </div>
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
+                Execute real cryptographic API calls against the local examiner server to verify role permissions,
+                fail-closed boundary enforcement, and attempt authorization.
+              </p>
 
-        <p className="shell-footer-note" style={{ marginTop: '1.5rem' }}>
-          Role-Based Access Control is cryptographically validated on the local Android server.
-        </p>
-      </div>
-    </main>
+              <div className="dev-action-grid">
+                <button
+                  className="btn btn-outline btn-sm"
+                  disabled={actionLoading}
+                  onClick={() => executeProtectedAction('Current Profile', '/api/auth/me', 'GET')}
+                >
+                  Verify Profile (GET /api/auth/me)
+                </button>
+                <button
+                  className="btn btn-outline btn-sm"
+                  disabled={actionLoading}
+                  onClick={() =>
+                    executeProtectedAction(
+                      'Provision User',
+                      '/api/admin/users/provision',
+                      'POST',
+                      {
+                        userId: `usr_test_${Date.now()}`,
+                        displayName: 'Sandbox User',
+                        role: 'STUDENT',
+                        instituteId: currentUser?.instituteId || 'inst_001',
+                        password: 'TemporaryPass123!'
+                      }
+                    )
+                  }
+                >
+                  Admin Provision User (Requires USER_PROVISION)
+                </button>
+                <button
+                  className="btn btn-outline btn-sm"
+                  disabled={actionLoading}
+                  onClick={() =>
+                    executeProtectedAction('Fetch Exam', '/api/exams/exam-001', 'GET')
+                  }
+                >
+                  Fetch Exam exam-001 (Requires Scope)
+                </button>
+                <button
+                  className="btn btn-outline btn-sm"
+                  disabled={actionLoading}
+                  onClick={() =>
+                    executeProtectedAction(
+                      'Submit Own Answer',
+                      '/api/attempts/att-001/answers',
+                      'POST',
+                      {
+                        questionId: 'q-001',
+                        value: 'A',
+                        clientSequenceNumber: 1,
+                        clientRecordedAt: new Date().toISOString()
+                      }
+                    )
+                  }
+                >
+                  Submit Answer (att-001, Own Attempt)
+                </button>
+                <button
+                  className="btn btn-outline btn-sm"
+                  disabled={actionLoading}
+                  onClick={() =>
+                    executeProtectedAction(
+                      'Submit Other Answer',
+                      '/api/attempts/att-999-forbidden/answers',
+                      'POST',
+                      {
+                        questionId: 'q-001',
+                        value: 'B',
+                        clientSequenceNumber: 1,
+                        clientRecordedAt: new Date().toISOString()
+                      }
+                    )
+                  }
+                >
+                  Foreign Attempt (Fail-Closed Check)
+                </button>
+                <button
+                  className="btn btn-outline btn-sm"
+                  disabled={actionLoading}
+                  onClick={() =>
+                    executeProtectedAction(
+                      'Report Integrity Event',
+                      '/api/attempts/att-001/integrity-events',
+                      'POST',
+                      {
+                        eventId: `evt_${Date.now()}`,
+                        eventCategory: 'APP_SWITCH',
+                        clientTimestamp: new Date().toISOString(),
+                        sequenceNumber: 1,
+                        appPackageName: 'com.browser.app',
+                        displayedAppName: 'Browser'
+                      }
+                    )
+                  }
+                >
+                  Report Integrity Event (att-001)
+                </button>
+              </div>
+
+              {lastActionResponse && (
+                <div className="dev-response-container">
+                  <div className="dev-response-header">
+                    <span>{lastActionResponse.endpoint}</span>
+                    <span
+                      className={
+                        lastActionResponse.status >= 200 && lastActionResponse.status < 300
+                          ? 'dev-badge-success'
+                          : lastActionResponse.status === 403
+                          ? 'dev-badge-forbidden'
+                          : 'dev-badge-error'
+                      }
+                    >
+                      HTTP {lastActionResponse.status || 'FAILED'}
+                    </span>
+                  </div>
+                  <pre className="dev-response-body">
+                    {JSON.stringify(lastActionResponse.data, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+
+            <p className="shell-footer-note" style={{ marginTop: '1.5rem' }}>
+              All Role-Based Access Control and cryptographic assertions are validated by the embedded Android server node.
+            </p>
+          </div>
+        </main>
       )}
     </div>
   );

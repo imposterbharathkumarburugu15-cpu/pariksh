@@ -53,7 +53,7 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
   currentUser
 }) => {
   const [activeStage, setActiveStage] = useState<
-    'import' | 'review' | 'questions' | 'answers' | 'settings' | 'validation' | 'simulator'
+    'import' | 'review' | 'questions' | 'answers' | 'settings' | 'validation' | 'publication' | 'simulator'
   >('import');
 
   // Draft state
@@ -100,8 +100,8 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
   // Restore draft from localStorage on load if available
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('doomedams_active_draft');
-      const savedScheme = localStorage.getItem('doomedams_active_scheme');
+      const saved = localStorage.getItem('pariksh_active_draft') || localStorage.getItem('doomedams_active_draft');
+      const savedScheme = localStorage.getItem('pariksh_active_scheme') || localStorage.getItem('doomedams_active_scheme');
       if (saved) {
         setDraft(JSON.parse(saved));
       }
@@ -116,10 +116,10 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
   // Persist draft to local storage on change
   const saveDraftLocally = (updatedDraft: ExamDraft, updatedScheme?: MarkingSchemeState) => {
     setDraft(updatedDraft);
-    localStorage.setItem('doomedams_active_draft', JSON.stringify(updatedDraft));
+    localStorage.setItem('pariksh_active_draft', JSON.stringify(updatedDraft));
     if (updatedScheme) {
       setMarkingScheme(updatedScheme);
-      localStorage.setItem('doomedams_active_scheme', JSON.stringify(updatedScheme));
+      localStorage.setItem('pariksh_active_scheme', JSON.stringify(updatedScheme));
     }
   };
 
@@ -450,23 +450,40 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
       {/* HEADER SECTION */}
       <div className="compiler-header">
         <div>
-          <span className="compiler-badge">Step 5 Exam Paper Compiler</span>
-          <h1 className="compiler-title">DOOMEDAMS Exam Authoring Suite</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
+            <span className="compiler-badge">PARIKSH Paper Compiler</span>
+            {draft && (
+              <span
+                className={`status-pill ${draft.status === 'PUBLISHED' ? 'verified' : 'pending'}`}
+                style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem' }}
+              >
+                STATUS: {draft.status}
+              </span>
+            )}
+          </div>
+          <h1 className="compiler-title">Exam Compiler</h1>
           <p className="compiler-subtitle">
-            Offline Document Ingestion, Structural Extraction, Answer Key Verification & Publication Gate
+            Create, validate, and publish examination papers offline.
           </p>
         </div>
 
-        <div className="compiler-header-actions">
+        <div className="compiler-header-actions" style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap' }}>
           {draft && (
             <button
-              className="dev-btn dev-btn-outline"
+              className="btn btn-secondary btn-sm"
               onClick={syncDraftToServer}
               title="Save draft transactionally on the local Android server node"
             >
               💾 Save Draft to Server
             </button>
           )}
+          <button
+            className={`btn ${activeStage === 'simulator' ? 'btn-primary' : 'btn-outline'} btn-sm`}
+            onClick={() => setActiveStage('simulator')}
+            title="Marking Scheme Simulator"
+          >
+            🧪 Scoring Simulator
+          </button>
         </div>
       </div>
 
@@ -476,57 +493,65 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
         </div>
       )}
 
-      {/* WORKFLOW STAGES STEPPER */}
+      {/* 7-STAGE PROGRESS STEPPER */}
       <nav className="compiler-tabs">
         <button
           className={`compiler-tab-btn ${activeStage === 'import' ? 'active' : ''}`}
           onClick={() => setActiveStage('import')}
         >
-          1. Import Paper
+          <span>1. Import Paper</span>
+          {draft && <span style={{ color: '#34d399', fontSize: '0.8rem' }}>✓</span>}
         </button>
         <button
           className={`compiler-tab-btn ${activeStage === 'review' ? 'active' : ''}`}
           onClick={() => setActiveStage('review')}
           disabled={!draft}
         >
-          2. Extraction Review {draft && `(${draft.questions.length} Qs)`}
+          <span>2. Extraction Review</span>
+          {draft && draft.questions.length > 0 && (
+            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>({draft.questions.length} Qs)</span>
+          )}
         </button>
         <button
           className={`compiler-tab-btn ${activeStage === 'questions' ? 'active' : ''}`}
           onClick={() => setActiveStage('questions')}
           disabled={!draft}
         >
-          3. Question Editor
+          <span>3. Question Editor</span>
         </button>
         <button
           className={`compiler-tab-btn ${activeStage === 'answers' ? 'active' : ''}`}
           onClick={() => setActiveStage('answers')}
           disabled={!draft}
         >
-          4. Answer Keys & Solutions
+          <span>4. Answer Keys & Solutions</span>
         </button>
         <button
           className={`compiler-tab-btn ${activeStage === 'settings' ? 'active' : ''}`}
           onClick={() => setActiveStage('settings')}
           disabled={!draft}
         >
-          5. Exam Settings & Marking
+          <span>5. Exam Settings</span>
         </button>
         <button
           className={`compiler-tab-btn ${activeStage === 'validation' ? 'active' : ''}`}
           onClick={() => setActiveStage('validation')}
           disabled={!draft}
         >
-          6. Validation & Publication Gate
-          {draft && gateResult.blockingErrors.length > 0 && (
+          <span>6. Validation</span>
+          {draft && gateResult.blockingErrors.length > 0 ? (
             <span className="compiler-error-count-pill">{gateResult.blockingErrors.length}</span>
-          )}
+          ) : draft && gateResult.isReady ? (
+            <span style={{ color: '#34d399', fontSize: '0.8rem' }}>✓</span>
+          ) : null}
         </button>
         <button
-          className={`compiler-tab-btn ${activeStage === 'simulator' ? 'active' : ''}`}
-          onClick={() => setActiveStage('simulator')}
+          className={`compiler-tab-btn ${activeStage === 'publication' ? 'active' : ''}`}
+          onClick={() => setActiveStage('publication')}
+          disabled={!draft}
         >
-          7. Marking Simulator 🧪
+          <span>7. Publication</span>
+          {draft?.status === 'PUBLISHED' && <span style={{ color: '#34d399', fontSize: '0.8rem' }}>✓</span>}
         </button>
       </nav>
 
@@ -1000,19 +1025,19 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
         </div>
       )}
 
-      {/* STAGE F: VALIDATION SUMMARY & PUBLICATION GATE */}
+      {/* STAGE 6: VALIDATION */}
       {activeStage === 'validation' && draft && (
         <div className="compiler-card">
           <div className="compiler-form-row-between">
             <div>
-              <h2 className="compiler-section-title">Authoritative Publication Gate</h2>
+              <h2 className="compiler-section-title">Stage 6: Pre-Flight Paper Validation</h2>
               <p className="compiler-helper-text">
-                Enforces strict examination integrity. Publication is prohibited if any blocking errors exist.
+                Enforces institutional examination integrity rules. All blocking errors must be resolved prior to publication.
               </p>
             </div>
             <div>
               <span className={`compiler-gate-pill ${gateResult.isReady ? 'ready' : 'blocked'}`}>
-                {gateResult.isReady ? '● READY FOR PUBLICATION' : '✕ PUBLICATION BLOCKED'}
+                {gateResult.isReady ? '● VALIDATION PASSED' : '✕ ISSUES DETECTED'}
               </span>
             </div>
           </div>
@@ -1033,7 +1058,7 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
                 <div className="compiler-stat-num" style={{ color: 'var(--color-warning)' }}>
                   {gateResult.warnings.length}
                 </div>
-                <div className="compiler-stat-label">Warnings</div>
+                <div className="compiler-stat-label">Quality Warnings</div>
               </div>
               <div className="compiler-stat-card">
                 <div className="compiler-stat-num" style={{ color: gateResult.unverifiedAnswerKeyCount ? 'var(--color-warning)' : 'var(--color-success)' }}>
@@ -1045,7 +1070,7 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
 
             {gateResult.blockingErrors.length > 0 && (
               <div className="compiler-error-block" style={{ marginTop: '1.25rem' }}>
-                <h3 className="compiler-error-block-title">Blocking Errors (Must be resolved before publishing)</h3>
+                <h3 className="compiler-error-block-title">Blocking Errors (Action Required)</h3>
                 <ul className="compiler-error-list">
                   {gateResult.blockingErrors.map((err, idx) => (
                     <li key={idx} className="compiler-error-item">
@@ -1069,30 +1094,91 @@ export const ExamPaperCompiler: React.FC<ExamPaperCompilerProps> = ({
               </div>
             )}
 
-            {publicationError && (
-              <div className="dev-alert dev-alert-danger" style={{ marginTop: '1rem' }}>
-                {publicationError}
-              </div>
-            )}
-
-            {publicationSuccess && (
-              <div className="dev-alert" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.4)', marginTop: '1rem' }}>
-                {publicationSuccess}
-              </div>
-            )}
-
-            <div className="compiler-pub-action-box" style={{ marginTop: '1.75rem' }}>
+            <div className="compiler-pub-action-box" style={{ marginTop: '2rem' }}>
               <button
-                className="dev-btn dev-btn-primary btn-lg"
-                disabled={!gateResult.isReady || draft.status === 'PUBLISHED'}
-                onClick={handlePublish}
+                className="btn btn-primary btn-lg"
+                disabled={!gateResult.isReady}
+                onClick={() => setActiveStage('publication')}
               >
-                {draft.status === 'PUBLISHED' ? '✓ Examination Published' : '🚀 Authorize & Publish Examination'}
+                {gateResult.isReady ? 'Proceed to Stage 7: Publication →' : 'Resolve Blocking Errors to Proceed'}
               </button>
-              <p className="text-xs text-muted" style={{ marginTop: '0.5rem' }}>
-                Requires EXAM_PUBLISH permission. Generates immutable SHA-256 hash-chained audit event.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* STAGE 7: PUBLICATION & RELEASE */}
+      {activeStage === 'publication' && draft && (
+        <div className="compiler-card">
+          <div className="compiler-form-row-between">
+            <div>
+              <h2 className="compiler-section-title">Stage 7: Publication & Package Sealing</h2>
+              <p className="compiler-helper-text">
+                Authorizes examination paper and distributes sealed candidate package to local examiner node.
               </p>
             </div>
+            <div>
+              <span className={`compiler-gate-pill ${draft.status === 'PUBLISHED' ? 'ready' : gateResult.isReady ? 'ready' : 'blocked'}`}>
+                {draft.status === 'PUBLISHED' ? '✓ PUBLISHED' : gateResult.isReady ? '● READY TO PUBLISH' : '✕ BLOCKED'}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--color-surface-elevated)', border: '1px solid var(--color-surface-border)', padding: '1.25rem 1.5rem', borderRadius: '8px', margin: '1.25rem 0' }}>
+            <h4 style={{ color: '#38bdf8', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+              🛡️ Candidate Package Confidentiality Guarantee
+            </h4>
+            <p style={{ fontSize: '0.875rem', color: '#a8b5c8', lineHeight: 1.55 }}>
+              Master answer keys, mathematical tolerances, and solution rationales are strictly segregated within
+              the examiner offline vault. The compiled student-distribution package contains only question stems
+              and choice options, cryptographically signed with immutable SHA-256 hash chaining.
+            </p>
+          </div>
+
+          <div className="shell-status-grid" style={{ marginBottom: '1.5rem' }}>
+            <div className="shell-status-item">
+              <div className="shell-status-label">Paper Title</div>
+              <div className="shell-status-value">{draft.title}</div>
+            </div>
+            <div className="shell-status-item">
+              <div className="shell-status-label">Lifecycle Status</div>
+              <div className="shell-status-value" style={{ color: draft.status === 'PUBLISHED' ? '#34d399' : '#fbbf24' }}>
+                ● {draft.status}
+              </div>
+            </div>
+            <div className="shell-status-item">
+              <div className="shell-status-label">Verified Questions</div>
+              <div className="shell-status-value">{gateResult.totalQuestionCount} Questions</div>
+            </div>
+            <div className="shell-status-item">
+              <div className="shell-status-label">Integrity Seal</div>
+              <div className="shell-status-value">{draft.status === 'PUBLISHED' ? '🔒 Cryptographically Sealed' : 'Draft / Unsealed'}</div>
+            </div>
+          </div>
+
+          {publicationError && (
+            <div className="dev-alert dev-alert-danger" style={{ marginBottom: '1.25rem' }}>
+              {publicationError}
+            </div>
+          )}
+
+          {publicationSuccess && (
+            <div className="dev-alert" style={{ background: 'rgba(52, 211, 153, 0.15)', color: '#34d399', border: '1px solid rgba(52, 211, 153, 0.35)', marginBottom: '1.25rem' }}>
+              {publicationSuccess}
+            </div>
+          )}
+
+          <div className="compiler-pub-action-box" style={{ marginTop: '1.5rem' }}>
+            <button
+              className="btn btn-primary btn-lg"
+              disabled={!gateResult.isReady || draft.status === 'PUBLISHED'}
+              onClick={handlePublish}
+            >
+              {draft.status === 'PUBLISHED' ? '✓ Examination Published & Sealed' : '🚀 Authorize & Publish Examination'}
+            </button>
+            <p className="text-xs text-muted" style={{ marginTop: '0.65rem' }}>
+              Requires EXAM_PUBLISH permission. Generates immutable SHA-256 audit entry in local Room database.
+            </p>
           </div>
         </div>
       )}

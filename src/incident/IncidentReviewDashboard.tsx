@@ -501,7 +501,7 @@ export const IncidentReviewDashboard: React.FC<Props> = ({
             <span>⚖️</span> Administrator Incident Review & Appeals
           </h2>
           <div style={{ fontSize: '12px', color: '#8b949e', marginTop: '2px' }}>
-            DOOMEDAMS Step 9: Offline Trust Layer • Authoritative Kotlin Transition Enforcement
+            PARIKSH Incident Review • Offline Trust Layer • Authoritative Kotlin Enforcement
           </div>
         </div>
 

@@ -234,7 +234,7 @@ export const ExamIntelligenceDashboard: React.FC<Props> = ({
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', `DOOMEDAMS_${reportType}_${selectedExamId}.csv`);
+      link.setAttribute('download', `PARIKSH_${reportType}_${selectedExamId}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -291,27 +291,31 @@ export const ExamIntelligenceDashboard: React.FC<Props> = ({
       {/* Top Header */}
       <header className="analytics-header">
         <div className="analytics-header-brand">
-          <h1 className="analytics-title">Examination Intelligence Dashboard</h1>
-          <span className="analytics-badge-node">Step 10 Authority Console</span>
+          <h1 className="analytics-title">PARIKSH Examination Intelligence</h1>
+          <span className="analytics-badge-node">Institutional Analytics Console</span>
           {currentUser && (
-            <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+            <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
               Institute: <strong style={{ color: '#38bdf8' }}>{currentUser.instituteId}</strong> | Operator:{' '}
               <strong style={{ color: '#f1f5f9' }}>{currentUser.displayName}</strong> ({currentUser.role})
             </span>
           )}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           <select
             className="analytics-exam-selector"
             value={selectedExamId}
             onChange={(e) => setSelectedExamId(e.target.value)}
           >
-            {examsList.map((ex) => (
-              <option key={ex.examId} value={ex.examId}>
-                {ex.title} ({ex.examId}) - {ex.status}
-              </option>
-            ))}
+            {examsList.length === 0 ? (
+              <option value="">No published examinations</option>
+            ) : (
+              examsList.map((ex) => (
+                <option key={ex.examId} value={ex.examId}>
+                  {ex.title} ({ex.examId}) - {ex.status}
+                </option>
+              ))
+            )}
           </select>
 
           {loading && (
@@ -319,11 +323,11 @@ export const ExamIntelligenceDashboard: React.FC<Props> = ({
               Syncing analytics...
             </span>
           )}
-          <button className="dev-btn dev-btn-outline btn-xs" onClick={() => { loadOverview(); loadExamAnalytics(); }}>
+          <button className="btn btn-secondary btn-xs" onClick={() => { loadOverview(); loadExamAnalytics(); }}>
             🔄 Refresh
           </button>
           {onClose && (
-            <button className="dev-btn dev-btn-danger btn-xs" onClick={onClose}>
+            <button className="btn btn-outline btn-xs" onClick={onClose}>
               Exit Console
             </button>
           )}
@@ -390,19 +394,53 @@ export const ExamIntelligenceDashboard: React.FC<Props> = ({
 
       {/* Main Content Area */}
       <main className="analytics-container">
-        {error && (
-          <div className="analytics-warning-box">
-            <strong>Notice:</strong> {error}
-          </div>
-        )}
-
-        {/* 1. OVERVIEW TAB */}
-        {activeTab === 'overview' && (
-          <div>
-            <div className="analytics-notice-box">
-              <strong>Authoritative Node Data:</strong> Displaying aggregate metrics derived strictly from local SQLite/Room
-              examiner database records. No cloud reliance, zero simulated values.
+        {error && !overview && examsList.length === 0 ? (
+          <div className="monitor-offline-card" style={{ margin: '3rem auto' }}>
+            <span className="monitor-offline-icon">📊</span>
+            <h3>Examiner Analytics Server Disconnected</h3>
+            <p>
+              Unable to reach the examiner intelligence API at <code>{serverUrl}</code>.
+              Ensure the offline examiner node service is running and accessible on this device or local network.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => { loadOverview(); loadExamAnalytics(); }}
+                disabled={loading}
+              >
+                {loading ? 'Reconnecting...' : 'Retry Connection'}
+              </button>
+              {onClose && (
+                <button type="button" className="btn btn-secondary" onClick={onClose}>
+                  Exit Console
+                </button>
+              )}
             </div>
+          </div>
+        ) : (
+          <>
+            {error && (
+              <div className="analytics-warning-box">
+                <strong>Sync Notice:</strong> {error} — Showing available local records.
+              </div>
+            )}
+
+            {/* 1. OVERVIEW TAB */}
+            {activeTab === 'overview' && (
+              <div>
+                <div className="analytics-notice-box">
+                  <strong>Authoritative Node Data:</strong> Displaying aggregate metrics derived strictly from local SQLite/Room
+                  examiner database records. No cloud reliance, zero simulated values.
+                </div>
+
+                {!overview && examsList.length === 0 && !loading && (
+                  <div className="empty-alerts-card" style={{ margin: '2rem 0' }}>
+                    <span className="empty-icon">📊</span>
+                    <h3>No Examination Records Available</h3>
+                    <p>Create and publish examinations from the Exam Compiler to begin compiling local cohort analytics.</p>
+                  </div>
+                )}
 
             {overview && (
               <div className="analytics-kpi-grid">
@@ -769,7 +807,7 @@ export const ExamIntelligenceDashboard: React.FC<Props> = ({
         {activeTab === 'questions' && (
           <div>
             <div className="analytics-warning-box">
-              <strong>Telemetry Disclosure:</strong> DOOMEDAMS CBT client records answer responses, revision sequences, and
+              <strong>Telemetry Disclosure:</strong> PARIKSH CBT client records answer responses, revision sequences, and
               submission receipts. Fine-grained per-question millisecond stopwatches are not recorded on student devices to
               prevent battery throttling and timer desynchronization. Duration is displayed as{' '}
               <code>TIME DATA UNAVAILABLE</code>.
@@ -1170,6 +1208,8 @@ export const ExamIntelligenceDashboard: React.FC<Props> = ({
               </div>
             </div>
           </div>
+        )}
+          </>
         )}
       </main>
 
